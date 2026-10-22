@@ -2,6 +2,22 @@
 {% block title %}Dashboard - Portale VVF{% endblock %}
 
 {% block content %}
+<!-- OVERLAY MODALE PER SCREENSHOT -->
+<div id="screenshotModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2><i class="fa-solid fa-camera"></i> Registra Turno</h2>
+    <p>Per avviare il servizio, è obbligatorio fornire lo screenshot di inizio turno (Discord o Gyazo).</p>
+    
+    <input type="text" id="modalScreenshotInput" placeholder="Incolla qui il link dello screenshot..." class="modal-input">
+    <p id="modalError" class="modal-error" style="display: none;">Devi inserire un link valido per continuare!</p>
+    
+    <div class="modal-buttons">
+      <button onclick="closeModal()" class="btn-cancel">Annulla</button>
+      <button onclick="submitShiftStart()" class="btn-confirm">Avvia Servizio</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-title">
   <h2>Dashboard Operativa</h2>
   <span class="date-badge"><i class="fa-regular fa-calendar"></i> Oggi</span>
@@ -32,7 +48,7 @@
   </div>
 </div>
 
-<!-- RIQUADRO TURNO CON TENDINA REPARTO -->
+<!-- RIQUADRO TURNO -->
 <div class="shift-panel">
   <div class="shift-panel-left">
     <div class="card-icon red" style="width: 60px; height: 60px; font-size: 28px;">
@@ -82,6 +98,7 @@
         <th>Reparto</th>
         <th>Mezzo</th>
         <th>Ruolo Operativo</th>
+        <th>Screenshot</th>
       </tr>
     </thead>
     <tbody>
@@ -98,10 +115,17 @@
             <span style="color: #666; font-size: 13px;">Operatore</span>
           {% endif %}
         </td>
+        <td>
+          {% if p.screenshot %}
+            <a href="{{ p.screenshot }}" target="_blank" style="color: #b71c1c; font-weight: bold; text-decoration: underline;"><i class="fa-solid fa-image"></i> Apri</a>
+          {% else %}
+            <span style="color: #aaa; font-size: 12px;">N/D</span>
+          {% endif %}
+        </td>
       </tr>
       {% else %}
       <tr>
-        <td colspan="5" style="text-align: center; color: #888; padding: 20px;">Nessun personale in servizio al momento.</td>
+        <td colspan="6" style="text-align: center; color: #888; padding: 20px;">Nessun personale in servizio al momento.</td>
       </tr>
       {% endfor %}
     </tbody>

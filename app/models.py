@@ -37,9 +37,10 @@ class Turno(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    force_id: Mapped[int | None] = mapped_column(ForeignKey("forces.id"), nullable=True) # NUOVO CAMPO
+    force_id: Mapped[int | None] = mapped_column(ForeignKey("forces.id"), nullable=True)
+    screenshot_url: Mapped[str | None] = mapped_column(String(500), nullable=True) # NUOVO CAMPO
     inizio: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     fine: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     
     user: Mapped["User"] = relationship()
-    force: Mapped["Force | None"] = relationship() # NUOVA RELAZIONE
+    force: Mapped["Force | None"] = relationship()
