@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Accedi - Portale VVF{% endblock %}
+{% block body_class %}page-login{% endblock %}
+
+{% block content %}
+<div class="login-card">
+  <div class="header">
+    <div class="logo-box">
+      <div style="position: relative; display: flex; justify-content: center; align-items: center;">
+        <i class="fa-solid fa-phone" style="transform: rotate(-15deg); font-size: 32px;"></i>
+        <i class="fa-solid fa-fire" style="position: absolute; top: -8px; right: -12px; color: #dc2626; font-size: 20px;"></i>
+      </div>
+    </div>
+    <h1 class="title">Portale Interforze</h1>
+  </div>
+
+  {% if error %}
+  <div class="alert-error">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" action="/login" style="width: 100%;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    
+    <div class="form-group">
+      <div class="icon-box"><i class="fa-solid fa-user"></i></div>
+      <input type="text" name="username" class="input-field" placeholder="username" required>
+    </div>
+
+    <div class="form-group">
+      <div class="icon-box"><i class="fa-solid fa-key"></i></div>
+      <input type="password" name="password" class="input-field" placeholder="password" required>
+    </div>
+
+    <div class="form-group">
+      <div class="icon-box"><i class="fa-solid fa-building"></i></div>
+      <select name="comando" class="select-field">
+        <option value="napoli" selected>COMANDO NAPOLI</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-login">Login</button>
+  </form>
+
+  <div style="margin-top: 15px; font-size: 13px; color: #ffffff; text-align: center;">
+    Non hai un account? <a href="/register" style="color: #efb837; text-decoration: none; font-weight: bold;">Registrati qui</a>
+  </div>
+</div>
+{% endblock %}

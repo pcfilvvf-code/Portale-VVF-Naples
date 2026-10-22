@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Profilo - Portale VVF{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <h2>Profilo Utente</h2>
+</div>
+
+<div class="content-section" style="max-width: 600px;">
+  <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+    <div class="avatar" style="width: 80px; height: 80px; font-size: 36px;"><i class="fa-solid fa-user"></i></div>
+    <div>
+      <h3 style="font-size: 24px; margin: 0;">{{ user.username }}</h3>
+      <p style="color: #666; margin: 5px 0 0 0;">{{ user.role | capitalize }}</p>
+    </div>
+  </div>
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <span style="display: block; font-size: 12px; color: #888; text-transform: uppercase; font-weight: bold;">Forza di Appartenenza</span>
+      <p style="font-size: 16px; margin-top: 5px;">{{ user.force.name if user.force else "Nessuna" }}</p>
+    </div>
+    <div>
+      <span style="display: block; font-size: 12px; color: #888; text-transform: uppercase; font-weight: bold;">Grado</span>
+      <p style="font-size: 16px; margin-top: 5px;">{{ user.rank or "Non assegnato" }}</p>
+    </div>
+    <div>
+      <span style="display: block; font-size: 12px; color: #888; text-transform: uppercase; font-weight: bold;">Data Iscrizione</span>
+      <p style="font-size: 16px; margin-top: 5px;">{{ user.created_at.strftime("%d/%m/%Y") }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

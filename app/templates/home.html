@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Portale VVF{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <h2>Dashboard Operativa</h2>
+  <span class="date-badge"><i class="fa-regular fa-calendar"></i> Oggi</span>
+</div>
+
+<!-- CARD SUMMARY -->
+<div class="cards-grid">
+  <div class="card">
+    <div class="card-icon red"><i class="fa-solid fa-fire"></i></div>
+    <div class="card-data">
+      <span class="card-number">{{ personale|length }}</span>
+      <span class="card-title">Unità in Turno</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-icon green"><i class="fa-solid fa-truck"></i></div>
+    <div class="card-data">
+      <span class="card-number">{{ n_forces }}</span>
+      <span class="card-title">Reparti Totali</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-icon yellow"><i class="fa-solid fa-users"></i></div>
+    <div class="card-data">
+      <span class="card-number">{{ n_members }}</span>
+      <span class="card-title">Personale Totale</span>
+    </div>
+  </div>
+</div>
+
+<!-- RIQUADRO TURNO CON TENDINA REPARTO -->
+<div class="shift-panel">
+  <div class="shift-panel-left">
+    <div class="card-icon red" style="width: 60px; height: 60px; font-size: 28px;">
+      <i class="fa-solid fa-clock"></i>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 5px; font-size: 18px; color: #261c16;">Stato del Turno</h3>
+      <p style="margin: 0; color: #666; font-size: 14px;">
+        <span id="turnoDurata" style="font-weight: bold; font-size: 16px; color: #b71c1c;">Durata: 00h 00m 00s</span>
+      </p>
+      <div style="margin-top: 10px;">
+        <label style="font-size: 13px; font-weight: bold; color: #444;">Reparto di Servizio:</label>
+        <select id="forceSelect" style="padding: 6px; border-radius: 4px; border: 1px solid #ccc; margin-left: 10px;">
+          <option value="">Nessuno</option>
+          {% for r in reparti %}
+            <option value="{{ r.id }}">{{ r.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="shift-panel-right">
+    <button id="shiftBtnMain" class="btn-main-shift active" onclick="toggleShift()">
+      <i class="fa-solid fa-power-off"></i> <span id="shiftBtnMainText">Termina Turno</span>
+    </button>
+    <p style="margin-top: 8px; font-size: 13px; color: #666; margin-bottom: 0; text-align: right;">
+      Stato: <span id="shiftStatusMainText" style="font-weight: bold; color: #2e7d32;">ATTIVO</span>
+    </p>
+  </div>
+</div>
+
+<!-- PERSONALE IN SERVIZIO -->
+<div class="content-section" style="margin-bottom: 25px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <h3><i class="fa-solid fa-user-shield"></i> Personale in Servizio</h3>
+    <div style="display: flex; gap: 10px;">
+      <span style="background: #ffebee; color: #b71c1c; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">CS: {{ n_capi }}</span>
+      <span style="background: #e3f2fd; color: #1565c0; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">VF: {{ n_vigili }}</span>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Operatore</th>
+        <th>Grado</th>
+        <th>Reparto</th>
+        <th>Mezzo</th>
+        <th>Ruolo Operativo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in personale %}
+      <tr>
+        <td><strong>{{ p.username }}</strong></td>
+        <td>{{ p.rank if p.rank else "Non assegnato" }}</td>
+        <td><span style="background: #eee; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">{{ p.reparto_servizio }}</span></td>
+        <td>{{ p.mezzo if p.mezzo else "Non assegnato" }}</td>
+        <td>
+          {% if capo_partenza and p.id == capo_partenza.id %}
+            <span class="status-badge red">Capo Partenza</span>
+          {% else %}
+            <span style="color: #666; font-size: 13px;">Operatore</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align: center; color: #888; padding: 20px;">Nessun personale in servizio al momento.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELLA ULTIMI TURNI -->
+<div class="content-section">
+  <h3><i class="fa-solid fa-clock-rotate-left"></i> I Miei Turni Precedenti</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Reparto</th>
+        <th>Inizio</th>
+        <th>Fine</th>
+        <th>Durata</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in turni_precedenti %}
+      <tr>
+        <td>{{ t.inizio.strftime("%d/%m/%Y") }}</td>
+        <td>{{ t.force.name if t.force else "Non assegnato" }}</td>
+        <td>{{ t.inizio.strftime("%H:%M") }}</td>
+        <td>{{ t.fine.strftime("%H:%M") if t.fine else "-" }}</td>
+        <td>
+          {% if t.fine %}
+            {% set durata = (t.fine - t.inizio).total_seconds() // 60 %}
+            {{ (durata // 60) | int }}h {{ (durata % 60) | int }}m
+          {% else %}
+            In corso
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align: center; color: #888; padding: 20px;">Nessun turno precedente registrato.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

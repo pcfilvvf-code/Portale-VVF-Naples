@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Portale VVF{% endblock %}</title>
+  
+  <!-- CSS con cache-buster -->
+  <link rel="stylesheet" href="/static/style.css?v=50">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+  <!-- TOPBAR (visibile solo se loggato) -->
+  <header class="topbar {% if not user %}topbar-hidden{% endif %}">
+    <div class="topbar-left">
+      <div class="logo">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <span>PORTALE VVF</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      {% if user %}
+      <div class="user-menu-container">
+        <button class="user-button" onclick="toggleUserDropdown(event)">
+          <div class="avatar"><i class="fa-solid fa-user"></i></div>
+          <div class="user-info">
+            <span class="user-name">{{ user.username }}</span>
+            <span class="user-role">{{ user.role | capitalize }}</span>
+          </div>
+          <i class="fa-solid fa-chevron-down arrow-icon"></i>
+        </button>
+        
+        <!-- MENU A TENDINA UTENTE -->
+        <div id="userDropdown" class="user-dropdown">
+          <a href="/impostazioni" class="dropdown-item"><i class="fa-solid fa-gear"></i> Impostazioni</a>
+          <a href="/profilo" class="dropdown-item"><i class="fa-solid fa-user-pen"></i> Profilo Utente</a>
+          <div class="dropdown-divider"></div>
+          <form method="post" action="/logout" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="dropdown-item logout" style="width:100%; text-align:left; background:none; border:none; cursor:pointer;">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- LAYOUT PRINCIPALE -->
+  <div class="app-container">
+    {% if user %}
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <a href="/" class="nav-item {% if request.url.path == '/' %}active{% endif %}">
+          <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
+        </a>
+        <a href="/forze" class="nav-item {% if request.url.path == '/forze' %}active{% endif %}">
+          <i class="fa-solid fa-shield-halved"></i> <span>Reparti</span>
+        </a>
+        <a href="/membri" class="nav-item {% if request.url.path == '/membri' %}active{% endif %}">
+          <i class="fa-solid fa-users"></i> <span>Personale</span>
+        </a>
+        {% if user.role in ("ufficiale", "admin") %}
+          <a href="/staff/membri" class="nav-item {% if '/staff/' in request.url.path %}active{% endif %}">
+            <i class="fa-solid fa-gear"></i> <span>Gestione Staff</span>
+          </a>
+        {% endif %}
+        {% if user.role == "admin" %}
+          <a href="/admin/forze" class="nav-item {% if '/admin/' in request.url.path %}active{% endif %}">
+            <i class="fa-solid fa-wrench"></i> <span>Pannello Admin</span>
+          </a>
+        {% endif %}
+      </nav>
+    </aside>
+    {% endif %}
+
+    <!-- CONTENUTO PAGINA -->
+    <main class="{% if user %}main-content{% else %}login-main{% endif %}">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

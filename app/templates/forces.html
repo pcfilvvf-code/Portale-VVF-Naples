@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Forze{% endblock %}
+{% block content %}
+<h1>Forze</h1>
+{% for f in forces %}
+  <section class="card">
+    <h2>{{ f.name }}</h2>
+    <p>{{ f.description or "Nessuna descrizione." }}</p>
+    <p class="muted">{{ f.members|length }} membri</p>
+  </section>
+{% else %}
+  <p class="muted">Nessuna forza creata al momento.</p>
+{% endfor %}
+{% endblock %}

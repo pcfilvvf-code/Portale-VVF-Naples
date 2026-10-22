@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Impostazioni - Portale VVF{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <h2>Impostazioni Account</h2>
+</div>
+
+<div style="max-width: 800px;">
+  
+  <!-- MESSAGGI DI STATO -->
+  {% if error %}
+  <div class="alert-error" style="background: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+    {{ error }}
+  </div>
+  {% endif %}
+  {% if success %}
+  <div style="background: #e8f5e9; border: 1px solid #2e7d32; color: #2e7d32; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+    {{ success }}
+  </div>
+  {% endif %}
+
+  <!-- 1. SICUREZZA E CREDENZIALI -->
+  <div class="content-section" style="margin-bottom: 25px;">
+    <h3 style="border-bottom: 2px solid #b71c1c; padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved"></i> Sicurezza e Credenziali</h3>
+    
+    <!-- Modifica Password -->
+    <h4 style="margin-bottom: 15px; color: #444;">Modifica Password</h4>
+    <form method="POST" action="/impostazioni">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+        <label style="font-weight: 600; font-size: 14px;">Password Attuale
+          <input type="password" name="vecchia_password" required style="display: block; width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+        </label>
+        <label style="font-weight: 600; font-size: 14px;">Nuova Password
+          <input type="password" name="nuova_password" required style="display: block; width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+        </label>
+        <label style="font-weight: 600; font-size: 14px;">Conferma Nuova Password
+          <input type="password" name="conferma_password" required style="display: block; width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+        </label>
+      </div>
+      <button type="submit" style="background: #b71c1c; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Aggiorna Password</button>
+    </form>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+
+    <!-- 2FA -->
+    <h4 style="margin-bottom: 10px; color: #444;">Autenticazione a due fattori (2FA)</h4>
+    <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Aggiungi un livello di sicurezza extra al tuo account.</p>
+    <button onclick="alert('Funzionalità in fase di sviluppo.');" style="background: #555; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">Configura 2FA</button>
+  </div>
+
+  <!-- 2. DISPOSITIVI E CRONOLOGIA -->
+  <div class="content-section" style="margin-bottom: 25px;">
+    <h3 style="border-bottom: 2px solid #b71c1c; padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-laptop"></i> Dispositivi e Accessi</h3>
+    
+    <h4 style="margin-bottom: 10px; color: #444;">Dispositivi Connessi</h4>
+    <table class="data-table" style="margin-bottom: 20px;">
+      <thead>
+        <tr>
+          <th>Dispositivo</th>
+          <th>Posizione (IP)</th>
+          <th>Azione</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><i class="fa-brands fa-safari"></i> Safari su macOS (Questo dispositivo)</td>
+          <td>127.0.0.1 (Locale)</td>
+          <td><span style="color: #2e7d32; font-weight: bold; font-size: 12px;">Attivo</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin-bottom: 10px; color: #444;">Cronologia Accessi</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data/Ora</th>
+          <th>Indirizzo IP</th>
+          <th>Stato</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Oggi, 19:30</td>
+          <td>127.0.0.1</td>
+          <td><span style="color: #2e7d32; font-size: 13px;">Login riuscito</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. PRIVACY E GESTIONE DATI -->
+  <div class="content-section" style="margin-bottom: 25px;">
+    <h3 style="border-bottom: 2px solid #b71c1c; padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-user-shield"></i> Privacy e Gestione Dati</h3>
+    
+    <h4 style="margin-bottom: 10px; color: #444;">Consensi Marketing</h4>
+    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 10px;">
+      <input type="checkbox" style="width: 16px; height: 16px;"> Desidero ricevere aggiornamenti e comunicazioni via email.
+    </label>
+    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 15px;">
+      <input type="checkbox" style="width: 16px; height: 16px;"> Acconsento alla condivisione dei dati con partner selezionati.
+    </label>
+
+    <h4 style="margin-bottom: 10px; color: #444;">Esportazione Dati</h4>
+    <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Scarica una copia di tutti i tuoi dati personali salvati sulla piattaforma (GDPR).</p>
+    <button onclick="alert('Richiesta di esportazione inviata. Riceverai un file a breve.');" style="background: #555; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">Richiedi Esportazione</button>
+  </div>
+
+  <!-- 4. ELIMINAZIONE ACCOUNT -->
+  <div class="content-section" style="border: 1px solid #ffcdd2; background: #fff8f8; margin-bottom: 30px;">
+    <h3 style="color: #b71c1c; margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> Eliminazione Account</h3>
+    <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Questa azione è irreversibile e comporterà la cancellazione definitiva di tutti i tuoi dati dal nostro database.</p>
+    <button onclick="alert('Per favore, contatta un amministratore per richiedere la chiusura del profilo.');" style="background: #b71c1c; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Elimina Account Definitivamente</button>
+  </div>
+
+</div>
+
+<!-- DISCLAIMER IMPORTANTE -->
+<div style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px dashed #ccc; color: #888; font-size: 12px;">
+  <strong>DISCLAIMER:</strong> Questo è un portale creato esclusivamente per scopi di gioco di ruolo (GDR) e simulazione interna. 
+  <br>Nessuna associazione, affiliazione o collegamento con enti reali, istituzioni governative o la vita reale è da intendersi sussistente.
+</div>
+
+{% endblock %}

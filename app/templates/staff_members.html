@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Gestione Membri - Portale VVF{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <h2>Gestione Membri</h2>
+</div>
+
+<div style="max-width: 900px;">
+  <p style="color: #666; margin-bottom: 20px;">Assegna la forza e il grado agli utenti registrati. Scegli "Nessuna" per rimuovere l'assegnazione.</p>
+
+  <div class="content-section">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Utente</th>
+          <th style="width: 250px;">Forza</th>
+          <th style="width: 200px;">Grado</th>
+          <th style="width: 100px;">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>
+            <strong style="color: #261c16;">{{ u.username }}</strong>
+            <br><span style="font-size: 12px; color: #888;">{{ u.role | capitalize }}</span>
+          </td>
+          
+          <form method="POST" action="/staff/membri/{{ u.id }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            
+            <td>
+              <select name="force_id" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: white;">
+                <option value="">Nessuna</option>
+                {% for f in forces %}
+                  <option value="{{ f.id }}" {% if u.force_id == f.id %}selected{% endif %}>{{ f.name }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            
+            <td>
+              <input type="text" name="rank" value="{{ u.rank }}" maxlength="50" placeholder="Es. Vigile" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </td>
+            
+            <td>
+              <button type="submit" style="background: #b71c1c; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%;">
+                Salva
+              </button>
+            </td>
+          </form>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" style="text-align: center; color: #888; padding: 20px;">Nessun utente registrato nel sistema.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

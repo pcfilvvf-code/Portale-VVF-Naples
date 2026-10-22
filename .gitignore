@@ -1,0 +1,10 @@
+venv/
+.env
+__pycache__/
+*.db
+venv/
+.venv/
+.env
+portale.db
+__pycache__/
+.DS_Store

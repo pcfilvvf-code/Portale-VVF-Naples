@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Membri{% endblock %}
+{% block content %}
+<h1>Membri</h1>
+{% if members %}
+<table>
+  <thead><tr><th>Utente</th><th>Forza</th><th>Grado</th></tr></thead>
+  <tbody>
+  {% for m in members %}
+    <tr><td>{{ m.username }}</td><td>{{ m.force.name }}</td><td>{{ m.rank }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="muted">Nessun membro arruolato.</p>
+{% endif %}
+{% endblock %}
